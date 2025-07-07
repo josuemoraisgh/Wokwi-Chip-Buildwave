@@ -1,0 +1,19 @@
+{
+  "name": "ads1115",
+  "author": "Prof. Josué Morais - UFU",
+  "license": "MIT",
+  "docs": "https://github.com/josuemoraisgh/Wokwi-Chip-ads1115/blob/main/docs/README.md",
+  "pins": [
+    "GND",  
+    "VDD",
+    "SCL",  
+    "SDA",
+    "ADDR",
+    "ALERT",
+    "AIN0",
+    "AIN1",
+    "AIN2",
+    "AIN3"
+  ],
+  "controls": []
+}
