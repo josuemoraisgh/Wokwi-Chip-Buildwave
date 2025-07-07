@@ -1,64 +1,40 @@
-#include <stdint.h>
 #include <math.h>
+#include <stdio.h>
 #include "wokwi-api.h"
 
-typedef enum {
-  WAVE_SINE,
-  WAVE_TRIANGLE,
-  WAVE_SQUARE
-} waveform_t;
-
 typedef struct {
-  pin_t out_pin;
-  waveform_t waveform;
-  float freq;
-  float amp;
+  pin_t out;
+  uint32_t waveform, freq_ms, amp_mv;
   float t;
 } chip_state_t;
 
-chip_state_t chip;
+static void tick(void *userdata) {
+  chip_state_t *chip = userdata;
+  float freq = (float)chip->freq_ms;
+  float amp = chip->amp_mv / 1000.0f;
+  float period = 1.0f / freq;
+  float phase = fmodf(chip->t, period) / period;
+  float value = 0;
 
-#define SAMPLE_RATE 10000.0 // Hz
-
-// Prototipos
-void chip_init();
-void chip_tick();
-
-void chip_init() {
-  chip.out_pin = pin_init("OUT", ANALOG_OUTPUT);
-  chip.t = 0.0;
-
-  // Atributos customizados
-  const char *wf = attr_init("waveform", "sine");
-  if (strcmp(wf, "triangle") == 0) {
-    chip.waveform = WAVE_TRIANGLE;
-  } else if (strcmp(wf, "square") == 0) {
-    chip.waveform = WAVE_SQUARE;
-  } else {
-    chip.waveform = WAVE_SINE;
+  switch (chip->waveform) {
+    case 0: value = sinf(2 * M_PI * phase); break;
+    case 1: value = 2.0f * fabsf(2.0f * phase - 1.0f) - 1.0f; break;
+    case 2: value = phase < 0.5f ? 1.0f : -1.0f; break;
   }
-  chip.freq = attr_init_float("frequency", 1000.0);
-  chip.amp = attr_init_float("amplitude", 1.0);
 
-  // Tick
-  set_interval_us(chip_tick, (int)(1e6 / SAMPLE_RATE));
+  float v = (value * amp + amp) * 0.5f;
+  pin_dac_write(chip->out, v);
+  chip->t += 1.0f / 10000.0f;
 }
 
-void chip_tick() {
-  float out = 0;
-  float period = 1.0 / chip.freq;
-  float phase = fmodf(chip.t, period) / period; // [0,1)
-  switch (chip.waveform) {
-    case WAVE_SINE:
-      out = chip.amp * sinf(2 * M_PI * phase);
-      break;
-    case WAVE_TRIANGLE:
-      out = chip.amp * (4.0f * fabsf(phase - 0.5f) - 1.0f);
-      break;
-    case WAVE_SQUARE:
-      out = chip.amp * (phase < 0.5f ? 1.0f : -1.0f);
-      break;
-  }
-  pin_write_analog(chip.out_pin, out);
-  chip.t += 1.0 / SAMPLE_RATE;
+void chip_init() {
+  chip_state_t *chip = malloc(sizeof(chip_state_t));
+  chip->out = pin_init("OUT", ANALOG);
+  chip->waveform = attr_init("waveform", 0);
+  chip->freq_ms  = attr_init("frequency", 100);
+  chip->amp_mv   = attr_init("amplitude", 1000);
+  chip->t = 0.0f;
+  add_clock_event(100, tick, chip);
+  printf("Function Generator iniciado. wf=%u freq=%u Hz amp=%.2f V\n",
+         chip->waveform, chip->freq_ms, chip->amp_mv / 1000.0f);
 }

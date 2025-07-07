@@ -3,50 +3,36 @@
   "description": "Gerador de função: senoidal, triangular ou quadrada, com ajuste de frequência e amplitude.",
   "author": "Prof. Josué Morais - UFU",
   "version": "1.0.0",
-  "category": "Signal Generator",
-  "icon": "chip",
-  "features": [],
   "files": [
     "main.c"
   ],
   "pins": [
-    {
-      "name": "OUT",
-      "type": "analog",
-      "direction": "output",
-      "description": "Saída do gerador de função"
-    }
+    "OUT"
   ],
-  "controls": [
+ "controls": [
     {
-      "name": "waveform",
-      "type": "select",
-      "options": [
-        { "label": "Senoidal", "value": "sine" },
-        { "label": "Triangular", "value": "triangle" },
-        { "label": "Quadrada", "value": "square" }
-      ],
-      "default": "sine",
-      "label": "Forma de onda"
-    },
-    {
-      "name": "frequency",
-      "type": "number",
-      "min": 1,
-      "max": 10000,
-      "step": 1,
-      "default": 1000,
-      "label": "Frequência (Hz)"
-    },
-    {
-      "name": "amplitude",
-      "type": "number",
+      "id": "waveform",
+      "label": "Forma de onda",
+      "type": "range",
       "min": 0,
-      "max": 5,
-      "step": 0.1,
-      "default": 1,
-      "label": "Amplitude (V)"
+      "max": 2,
+      "step": 1
+    },
+    {
+      "id": "frequency",
+      "label": "Frequência (Hz)",
+      "type": "range",
+      "min": 1,
+      "max": 1000,
+      "step": 1
+    },
+    {
+      "id": "amplitude",
+      "label": "Amplitude (0‑5 V)",
+      "type": "range",
+      "min": 0,
+      "max": 5000,
+      "step": 100
     }
   ]
 }
-
