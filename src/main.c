@@ -13,7 +13,7 @@ static chip_state_t chip;
 #define SAMPLE_RATE 10000.0f // 10 kHz
 
 void chip_init(void) {
-  chip.out = pin_init("OUT", PIN_MODE_OUTPUT);
+  chip.out = pin_init("OUT", 1);
   chip.waveform = attr_init("waveform", 0);   // 0: seno, 1: tri, 2: quad
   chip.freq = attr_init("frequency", 100);    // Hz
   chip.amp = attr_init("amplitude", 1000);    // mV
