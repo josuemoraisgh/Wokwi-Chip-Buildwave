@@ -12,16 +12,16 @@ static chip_state_t chip;
 
 #define SAMPLE_RATE 10000.0f // 10 kHz
 
-void chip_init() {
-  chip.out = pin_init("OUT");
+void chip_init(void) {
+  chip.out = pin_init("OUT", PIN_MODE_OUTPUT);
   chip.waveform = attr_init("waveform", 0);   // 0: seno, 1: tri, 2: quad
   chip.freq = attr_init("frequency", 100);    // Hz
   chip.amp = attr_init("amplitude", 1000);    // mV
   chip.t = 0.0f;
-  set_tick_function(tick);
 }
 
-void tick(void) {
+// Esta função será chamada automaticamente pelo simulador Wokwi
+void chip_tick(void) {
   float freq = (float)chip.freq;
   float amp = chip.amp / 1000.0f; // em Volts
   float period = 1.0f / freq;
@@ -34,7 +34,7 @@ void tick(void) {
     case 2: value = phase < 0.5f ? 1.0f : -1.0f; break;
   }
 
-  float v = (value * amp + amp) * 0.5f;
+  float v = (value * amp + amp) * 0.5f; // entre 0 e amp
   pin_dac_write(chip.out, v); // Saída analógica (0–5 V)
   chip.t += 1.0f / SAMPLE_RATE;
 }
