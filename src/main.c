@@ -1,40 +1,26 @@
 #include <math.h>
-#include <stdint.h>
 #include "wokwi-api.h"
+#define PI 3.141592653589793
 
-typedef struct {
-  pin_t out;
-  uint32_t waveform, freq, amp;
-  float t;
-} chip_state_t;
-
-static chip_state_t chip;
-
-#define SAMPLE_RATE 10000.0f // 10 kHz
+static float freqs[5];
+static float amplitude;
 
 void chip_init(void) {
-  chip.out = pin_init("OUT", 1);
-  chip.waveform = attr_init("waveform", 0);   // 0: seno, 1: tri, 2: quad
-  chip.freq = attr_init("frequency", 100);    // Hz
-  chip.amp = attr_init("amplitude", 1000);    // mV
-  chip.t = 0.0f;
+  freqs[0] = attr_read_float(attr_init_float("freq1", 10.0f));
+  freqs[1] = attr_read_float(attr_init_float("freq2", 110.0f));
+  freqs[2] = attr_read_float(attr_init_float("freq3", 0.0f));
+  freqs[3] = attr_read_float(attr_init_float("freq4", 0.0f));
+  freqs[4] = attr_read_float(attr_init_float("freq5", 0.0f));
+  amplitude = attr_read_float(attr_init_float("amplitude", 1.0f));
 }
 
-// Esta função será chamada automaticamente pelo simulador Wokwi
 void chip_tick(void) {
-  float freq = (float)chip.freq;
-  float amp = chip.amp / 1000.0f; // em Volts
-  float period = 1.0f / freq;
-  float phase = fmodf(chip.t, period) / period;
-  float value = 0;
-
-  switch (chip.waveform) {
-    case 0: value = sinf(2 * M_PI * phase); break;
-    case 1: value = 2.0f * fabsf(2.0f * phase - 1.0f) - 1.0f; break;
-    case 2: value = phase < 0.5f ? 1.0f : -1.0f; break;
+  double t = get_sim_nanos() * 1e-9;
+  double y = 0.0;
+  for (int i = 0; i < 5; i++) {
+    if (freqs[i] > 0.0f) {
+      y += sin(2.0 * PI * freqs[i] * t);
+    }
   }
-
-  float v = (value * amp + amp) * 0.5f; // entre 0 e amp
-  pin_dac_write(chip.out, v); // Saída analógica (0–5 V)
-  chip.t += 1.0f / SAMPLE_RATE;
+  pin_dac_write(pin_init("OUT", ANALOG), (float)(y * amplitude));
 }
