@@ -5,7 +5,7 @@
   "author": "Prof. Josué Morais - UFU",
   "language": "c",
   "entry": "signal_gen.c",
-  "clock": "10us",
+  "tick": "auto",
   "pins": ["OUT"],
   "params": {
     "freq1": { "type": "number", "default": 10,   "unit": "Hz" },
