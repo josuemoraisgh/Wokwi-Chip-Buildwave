@@ -28,13 +28,13 @@ void chip_tick(void *user_data) {
 void chip_init(void) {
   opamp_chip_t *chip = malloc(sizeof(opamp_chip_t));
 
-  chip->freqs[0] = attr_read_float(attr_init_float("freq1", 10.0f));
-  chip->freqs[1] = attr_read_float(attr_init_float("freq2", 110.0f));
-  chip->freqs[2] = attr_read_float(attr_init_float("freq3", 0.0f));
+  chip->freqs[0] = attr_read_float(attr_init_float("freq1", 100.0f)) / 10.0f;
+  chip->freqs[1] = attr_read_float(attr_init_float("freq2", 1100.0f)) / 10.0f;
+  chip->freqs[2] = attr_read_float(attr_init_float("freq3", 0.0f)) / 10.0f;
 
-  chip->amps[0] = attr_read_float(attr_init_float("amp1", 1.0f));
-  chip->amps[1] = attr_read_float(attr_init_float("amp2", 1.0f));
-  chip->amps[2] = attr_read_float(attr_init_float("amp3", 1.0f));
+  chip->amps[0] = attr_read_float(attr_init_float("amp1", 10.0f)) / 10.0f;
+  chip->amps[1] = attr_read_float(attr_init_float("amp2", 10.0f)) / 10.0f;
+  chip->amps[2] = attr_read_float(attr_init_float("amp3", 10.0f)) / 10.0f;
 
   chip->vout = pin_init("OUT", ANALOG);
 
