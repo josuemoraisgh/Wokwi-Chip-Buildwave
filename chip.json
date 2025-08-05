@@ -1,18 +1,18 @@
 {
   "name": "buildwave",
   "description": "Gerador de função: senoidal, triangular ou quadrada, com ajuste de frequência e amplitude.",
-  "chip": "multi_freq_signal_gen",
   "author": "Prof. Josué Morais - UFU",
-  "language": "c",
-  "entry": "signal_gen.c",
-  "tick": "auto",
-  "pins": ["OUT"],
-  "params": {
-    "freq1": { "type": "number", "default": 10,   "unit": "Hz" },
-    "freq2": { "type": "number", "default": 110,  "unit": "Hz" },
-    "freq3": { "type": "number", "default": 0,    "unit": "Hz" },
-    "freq4": { "type": "number", "default": 0,    "unit": "Hz" },
-    "freq5": { "type": "number", "default": 0,    "unit": "Hz" },
-    "amplitude": { "type": "number", "default": 1.0, "unit": "V" }
+  "version": 1,
+  "pinCount": 1,
+  "pins": [
+    { "name": "OUT", "type": "analog", "direction": "output" }
+  ],
+  "attributes": {
+    "freq1": { "type": "float", "default": 10.0 },
+    "freq2": { "type": "float", "default": 110.0 },
+    "freq3": { "type": "float", "default": 0.0 },
+    "amp1": { "type": "float", "default": 1.0 },
+    "amp2": { "type": "float", "default": 1.0 },
+    "amp3": { "type": "float", "default": 1.0 }
   }
 }
