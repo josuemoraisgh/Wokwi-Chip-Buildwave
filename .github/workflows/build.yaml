@@ -34,15 +34,16 @@ jobs:
 
       - name: Install WASI SDK
         run: |
-          wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz
+          wget -q https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz
           tar -xzf wasi-sdk-20.0-linux.tar.gz
-          echo "WASI_SDK_PATH=$PWD/wasi-sdk-20.0" >> $GITHUB_ENV
+          # O layout do SDK oficial: wasi-sdk-20.0/bin, lib, include etc.
+          echo "WASI_SDK_PATH=$(pwd)/wasi-sdk-20.0" >> $GITHUB_ENV
 
       - name: Build chip with WASI support
         run: |
           mkdir -p dist
-          $WASI_SDK_PATH/bin/clang --target=wasm32-wasi \
-            -O3 -flto -nostartfiles \
+          $WASI_SDK_PATH/bin/clang --sysroot=$WASI_SDK_PATH/share/wasi-sysroot \
+            --target=wasm32-wasi -O3 -flto -nostartfiles \
             -Wl,--no-entry -Wl,--export-all -Wl,--allow-undefined \
             -o dist/chip.wasm src/main.c
 
