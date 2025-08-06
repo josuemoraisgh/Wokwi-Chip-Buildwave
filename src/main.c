@@ -1,7 +1,33 @@
 #include "wokwi-api.h"
+#include <stdlib.h>
 
 #define PI 3.141592653589793
 #define NUM_SINE 3
+
+// Aproximação da função seno por série de Taylor
+float sine_taylor(float x) {
+  // Normaliza x para o intervalo [-PI, PI]
+  while (x > PI) x -= 2.0f * PI;
+  while (x < -PI) x += 2.0f * PI;
+
+  float x2 = x * x;
+  float term = x;       // Primeiro termo da série
+  float sum = term;
+
+  term *= -x2 / (2.0f * 3.0f);
+  sum += term;
+
+  term *= -x2 / (4.0f * 5.0f);
+  sum += term;
+
+  term *= -x2 / (6.0f * 7.0f);
+  sum += term;
+
+  term *= -x2 / (8.0f * 9.0f);
+  sum += term;
+
+  return sum;
+}
 
 typedef struct {
   pin_t vout;
@@ -17,7 +43,8 @@ void chip_tick(void *user_data) {
 
   for (int i = 0; i < NUM_SINE; i++) {
     if (chip->freqs[i] > 0.0f && chip->amps[i] != 0.0f) {
-      y += chip->amps[i] * sin(2.0 * PI * chip->freqs[i] * t);
+      float angle = 2.0f * PI * chip->freqs[i] * t;
+      y += chip->amps[i] * sine_taylor(angle);
     }
   }
 
