@@ -12,7 +12,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Build chip
-        uses: wokwi/wokwi-chip-clang-action@main
+        uses: wokwi/wokwi-chip-clang-action@v1.11.0
         with:
           sources: "src/main.c"
       - name: Copy chip.json
