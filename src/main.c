@@ -1,5 +1,3 @@
-#include <math.h>
-#include <stdlib.h>
 #include "wokwi-api.h"
 
 #define PI 3.141592653589793
