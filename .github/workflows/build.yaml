@@ -11,6 +11,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
+
+      - name: Install curl (workaround)
+        run: sudo apt-get update && sudo apt-get install -y curl
+        
       - name: Build chip
         uses: wokwi/wokwi-chip-clang-action@v1.11.0
         with:
